@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="prs" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ابزار ساده و رایگان ساخت و چاپ برچسب قیمت کالاها">
+  <title>قیمت‌چاپ | برچسب قیمت، آماده چاپ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="قیمت‌چاپ">
+      <span class="brand-mark">ق‌چ</span>
+      <span><strong>قیمت‌چاپ</strong><small>برچسب قیمت، آماده چاپ.</small></span>
+    </a>
+    <span class="version">نسخه 0.1.0</span>
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <p class="eyebrow">ابزار رایگان برای دکان‌ها</p>
+      <h1>برچسب قیمت کالاهایت را<br><span>به‌سادگی آماده چاپ کن.</span></h1>
+      <p class="intro-copy">کالاها را اضافه کن، پیش‌نمایش بگیر و برچسب‌ها را روی کاغذ A4 چاپ کن.</p>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel editor">
+        <div class="panel-heading">
+          <div><h2>افزودن کالا</h2><p>معلومات کالا را وارد کنید.</p></div>
+        </div>
+        <form id="product-form">
+          <label for="product-name">نام کالا</label>
+          <input id="product-name" name="name" type="text" placeholder="مثلاً روغن خوراکی" maxlength="80" autocomplete="off" required>
+          <label for="product-price">قیمت</label>
+          <div class="price-input">
+            <input id="product-price" name="price" inputmode="numeric" placeholder="۲۵۰٬۰۰۰" autocomplete="off" required>
+            <span id="currency-suffix">افغانی</span>
+          </div>
+          <div class="form-row">
+            <div class="field-grow">
+              <label for="product-quantity">شمار برچسب‌ها</label>
+              <input id="product-quantity" name="quantity" type="number" min="1" max="200" value="1" required>
+            </div>
+            <div class="field-grow">
+              <label for="currency">واحد پول</label>
+              <select id="currency"><option value="افغانی">افغانی</option><option value="دالر">دالر</option></select>
+            </div>
+          </div>
+          <button class="button button-primary button-full" id="submit-button" type="submit"><span>＋</span> افزودن کالا</button>
+          <button class="button button-quiet button-full hidden" id="cancel-edit" type="button">لغو تغییرات</button>
+        </form>
+
+        <div class="list-heading">
+          <h2>کالاها</h2><span id="product-count" class="count">۰</span>
+        </div>
+        <div id="product-list" class="product-list"></div>
+        <div id="empty-list" class="empty-state">
+          <div class="empty-icon">＋</div>
+          <strong>هنوز کالایی اضافه نشده است</strong>
+          <p>نخستین کالا را از فورم بالا اضافه کنید.</p>
+        </div>
+        <button id="clear-all" class="button button-quiet button-full hidden" type="button">حذف همه کالاها</button>
+      </aside>
+
+      <section class="panel preview-panel">
+        <div class="preview-heading">
+          <div><h2>پیش‌نمایش برچسب‌های قیمت</h2><p id="preview-meta">برچسب‌ها در صفحه A4 تنظیم می‌شوند.</p></div>
+          <button id="print-button" class="button button-primary print-button" type="button" disabled><span>▣</span> چاپ برچسب‌ها</button>
+        </div>
+        <div class="preview-toolbar">
+          <label class="template-label" for="template">طرح برچسب</label>
+          <select id="template"><option value="classic">ساده</option><option value="dark">سیاه</option><option value="soft">مینیمال</option></select>
+          <span class="preview-note">اندازه: ۶۰ × ۴۰ میلی‌متر</span>
+        </div>
+        <div class="preview-canvas">
+          <div id="preview-grid" class="preview-grid"></div>
+          <div id="preview-empty" class="preview-empty">
+            <div class="preview-empty-icon">▤</div>
+            <strong>پیش‌نمایش برچسب‌ها در این‌جا نمایش داده می‌شود</strong>
+            <p>پس از افزودن کالا، برچسب‌های آن در این‌جا نمایش داده می‌شوند.</p>
+          </div>
+        </div>
+        <div class="print-hint"><span>ⓘ</span> برای چاپ با اندازه درست، مقیاس چاپ را روی ۱۰۰٪ تنظیم کنید.</div>
+      </section>
+    </section>
+    <footer><span>قیمت‌چاپ · رایگان و بدون نیاز به ثبت‌نام</span><span>معلومات فقط در مرورگر شما ذخیره می‌شود.</span></footer>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
