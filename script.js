@@ -100,7 +100,12 @@
     const currency = document.createElement("div");
     currency.className = "label-currency";
     currency.textContent = state.currency;
-    label.append(name, price, currency);
+    const watermark = document.createElement("img");
+    watermark.className = "label-watermark";
+    watermark.src = "assets/dari-community-logo.png";
+    watermark.alt = "";
+    watermark.setAttribute("aria-hidden", "true");
+    label.append(watermark, name, price, currency);
     return label;
   }
   function renderPreview() {
