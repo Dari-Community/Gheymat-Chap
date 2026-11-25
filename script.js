@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   const STORAGE_KEY = "gheymat-chap-v0.1.0";
-  const state = { products: [], currency: "افغانی", template: "classic", editingId: null };
+  const state = { products: [], currency: "افغانی", template: "classic", editingId: null , showCurrency: true};
 
   const $ = (selector) => document.querySelector(selector);
   const form = $("#product-form");
@@ -21,6 +21,15 @@
   const barcodeInput = $("#product-barcode");
   const toast = $("#toast");
   let toastTimer;
+  const currencyToggle = $("#show-currency");
+
+  currencyToggle.checked = state.showCurrency;
+
+  currencyToggle.addEventListener("change", () => {
+    state.showCurrency = currencyToggle.checked;
+    saveState();
+    renderPreview();
+  });
 
   const digitsMap = {"۰":"0","۱":"1","۲":"2","۳":"3","۴":"4","۵":"5","۶":"6","۷":"7","۸":"8","۹":"9","٠":"0","١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9"};
   function normalizeDigits(value) { return String(value).replace(/[۰-۹٠-٩]/g, d => digitsMap[d]); }
@@ -41,7 +50,7 @@
   }
   function saveState() {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({products: state.products, currency: state.currency, template: state.template}));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({products: state.products, currency: state.currency, template: state.template, showCurrency: state.showCurrency}));
     } catch (error) { showToast("معلومات در مرورگر ذخیره نشد."); }
   }
   function loadState() {
@@ -51,6 +60,7 @@
       state.products = saved.products.filter(p => p && typeof p.name === "string" && Number.isSafeInteger(p.price) && Number.isSafeInteger(p.quantity));
       state.currency = saved.currency === "دالر" ? "دالر" : "افغانی";
       state.template = ["classic","dark","soft"].includes(saved.template) ? saved.template : "classic";
+      state.showCurrency = saved.showCurrency !== false;
     } catch (_) { state.products = []; }
   }
   function renderProducts() {
@@ -92,20 +102,39 @@
   function createLabel(product) {
     const label = document.createElement("article");
     label.className = `price-label template-${state.template}`;
+
     const name = document.createElement("div");
     name.className = "label-name";
     name.textContent = product.name;
+
+    const priceRow = document.createElement("div");
+    priceRow.className = "label-price-row";
+
     const price = document.createElement("div");
     price.className = "label-price";
     price.textContent = formatPrice(product.price);
-    const currency = document.createElement("div");
-    currency.className = "label-currency";
-    currency.textContent = state.currency;
+
+    priceRow.append(price);
+
+    if (state.showCurrency) {
+      const currency = document.createElement("span");
+      currency.className = "label-currency";
+      currency.textContent = `(${state.currency})`;
+      priceRow.append(currency);
+    }
+
+    label.append(name, priceRow);
+
+    // لوگوی واترمارک
     const watermark = document.createElement("img");
     watermark.className = "label-watermark";
     watermark.src = "assets/dari-community-logo.png";
     watermark.alt = "";
     watermark.setAttribute("aria-hidden", "true");
+
+    label.append(watermark);
+
+    // بارکد اختیاری
     if (product.barcode) {
       const barcodeContainer = document.createElement("div");
       barcodeContainer.className = "label-barcode";
@@ -124,11 +153,11 @@
             width: 1.2,
             height: 25,
             displayValue: true,
-            fontSize: 7,
+            fontSize: 10,
             margin: 0,
             textMargin: 2,
-            background: "transparent",
-            lineColor: state.template === "dark" ? "#ffffff" : "#171717"
+            background: "#ffffff",
+            lineColor: "#171717"
           });
         } catch (error) {
           barcodeContainer.textContent = product.barcode;
@@ -137,9 +166,9 @@
         barcodeContainer.textContent = product.barcode;
       }
 
-      label.appendChild(barcodeContainer);
+      label.append(barcodeContainer);
     }
-    label.append(watermark,price, name,  currency);
+
     return label;
   }
   function renderPreview() {

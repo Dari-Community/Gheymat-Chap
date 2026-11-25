@@ -474,9 +474,49 @@ form > label:not(:first-child), .price-input {
     overflow-wrap: anywhere
 }
 
+.label-price-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 5px;
+    direction: rtl;
+    max-width: 100%;
+}
+
+.label-price {
+    font-weight: 800;
+    font-size: 23px;
+    line-height: 1.4;
+    direction: ltr;
+    overflow-wrap: anywhere;
+}
+
 .label-currency {
-    font-size: 10px;
-    margin-top: 2px
+    font-size: 9px;
+    font-weight: 500;
+    color: #777;
+    white-space: nowrap;
+    direction: rtl;
+}
+
+.template-dark .label-currency {
+    color: #ccc;
+}
+
+.currency-toggle {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 5px 0 0 0;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.currency-toggle input {
+    width: 16px;
+    height: 16px;
+    accent-color: #171717;
+    cursor: pointer;
 }
 
 .price-label.template-dark {
