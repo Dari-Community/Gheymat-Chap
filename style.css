@@ -562,6 +562,26 @@ footer {
     transform: translate(-50%, 0)
 }
 
+.label-barcode {
+    width: 100%;
+    max-width: 48mm;
+    margin-top: 2mm;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    padding: 1mm 2mm;
+    overflow: hidden;
+}
+
+.label-barcode svg {
+    display: block;
+    width: 100%;
+    max-height: 10mm;
+}
+
 @media (max-width: 950px) {
     .workspace {
         grid-template-columns:1fr

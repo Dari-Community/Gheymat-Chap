@@ -18,6 +18,7 @@
   const cancelEdit = $("#cancel-edit");
   const clearAll = $("#clear-all");
   const printButton = $("#print-button");
+  const barcodeInput = $("#product-barcode");
   const toast = $("#toast");
   let toastTimer;
 
@@ -105,7 +106,40 @@
     watermark.src = "assets/dari-community-logo.png";
     watermark.alt = "";
     watermark.setAttribute("aria-hidden", "true");
-    label.append(watermark, name, price, currency);
+    if (product.barcode) {
+      const barcodeContainer = document.createElement("div");
+      barcodeContainer.className = "label-barcode";
+
+      const barcodeSvg = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+      );
+
+      barcodeContainer.appendChild(barcodeSvg);
+
+      if (typeof JsBarcode === "function") {
+        try {
+          JsBarcode(barcodeSvg, product.barcode, {
+            format: "CODE128",
+            width: 1.2,
+            height: 25,
+            displayValue: true,
+            fontSize: 7,
+            margin: 0,
+            textMargin: 2,
+            background: "transparent",
+            lineColor: state.template === "dark" ? "#ffffff" : "#171717"
+          });
+        } catch (error) {
+          barcodeContainer.textContent = product.barcode;
+        }
+      } else {
+        barcodeContainer.textContent = product.barcode;
+      }
+
+      label.appendChild(barcodeContainer);
+    }
+    label.append(watermark,price, name,  currency);
     return label;
   }
   function renderPreview() {
@@ -143,6 +177,7 @@
     cancelEdit.classList.remove("hidden");
     nameInput.focus();
     form.scrollIntoView({behavior: "smooth", block: "nearest"});
+    barcodeInput.value = product.barcode || "";
   }
   function deleteProduct(id) {
     state.products = state.products.filter(p => p.id !== id);
@@ -153,6 +188,12 @@
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const name = nameInput.value.trim();
+    const barcode = barcodeInput.value.trim();
+    if (barcode && !/^[\x20-\x7E]{1,80}$/.test(barcode)) {
+      showToast("بارکد باید شامل حروف و اعداد انگلیسی باشد.");
+      barcodeInput.focus();
+      return;
+    }
     const price = parsePrice(priceInput.value);
     const quantity = Number(normalizeDigits(quantityInput.value));
     if (!name) { nameInput.focus(); return; }
@@ -160,10 +201,10 @@
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 200) { showToast("شمار برچسب‌ها باید بین ۱ تا ۲۰۰ باشد."); quantityInput.focus(); return; }
     if (state.editingId) {
       const product = state.products.find(p => p.id === state.editingId);
-      if (product) Object.assign(product, {name, price, quantity});
+      if (product) Object.assign(product, {name, price, quantity, barcode});
       showToast("تغییرات ذخیره شد.");
     } else {
-      state.products.push({id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()), name, price, quantity});
+      state.products.push({id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()), name, price, quantity,barcode});
       showToast("کالا اضافه شد.");
     }
     saveState(); render(); resetForm(); nameInput.focus();
